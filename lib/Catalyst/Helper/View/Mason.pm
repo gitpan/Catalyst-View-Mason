@@ -2,7 +2,7 @@ package Catalyst::Helper::View::Mason;
 
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 NAME
 
@@ -10,7 +10,7 @@ Catalyst::Helper::View::Mason - Helper for Mason Views
 
 =head1 SYNOPSIS
 
-    bin/create view Mason Mason
+    script/create.pl view Mason Mason
 
 =head1 DESCRIPTION
 

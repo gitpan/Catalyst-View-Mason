@@ -5,7 +5,7 @@ use base qw/Catalyst::Base/;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -16,7 +16,7 @@ Catalyst::View::Mason - Mason View Class
 =head1 SYNOPSIS
 
     # use the helper
-    create.pl view Mason Mason
+    script/create.pl view Mason Mason
 
     # lib/MyApp/View/Mason.pm
     package MyApp::View::Mason;
@@ -86,7 +86,7 @@ base, context and name of the app, respectively.
 sub process {
     my ( $self, $c ) = @_;
     $c->res->headers->content_type('text/html;charset=utf8');
-    my $output;
+    my $output = '';
     my $component_path = $c->stash->{template} || $c->req->match;
     unless ($component_path) {
         $c->log->debug('No Mason component specified for rendering')
@@ -98,11 +98,13 @@ sub process {
 
     # Set the URL base, context and name of the app as global Mason vars
     # $base, $c and $name
-    $self->template->set_global(
-        '$base' => $c->req->base,
-        '$c'    => $c,
-        '$name' => $c->config->{name}
+	$self->template->set_global(@$_)
+    foreach (
+        [ '$base' => $c->req->base ],
+        [ '$c'    => $c ],
+        [ '$name' => $c->config->{name} ]
     );
+
 
     eval {
         $self->template->exec(
