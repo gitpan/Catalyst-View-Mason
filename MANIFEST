@@ -1,0 +1,9 @@
+Changes
+lib/Catalyst/Helper/View/Mason.pm
+lib/Catalyst/View/Mason.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+META.yml			Module meta-data (added by MakeMaker)
+README
+test.pl
