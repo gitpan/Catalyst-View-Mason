@@ -5,7 +5,7 @@ use base qw/Catalyst::Base/;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -86,7 +86,7 @@ base, context and name of the app, respectively.
 sub process {
     my ( $self, $c ) = @_;
     $c->res->headers->content_type('text/html;charset=utf8');
-    my $output = '';
+    $self->{output} = '';
     my $component_path = $c->stash->{template} || $c->req->match;
     unless ($component_path) {
         $c->log->debug('No Mason component specified for rendering')

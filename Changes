@@ -1,6 +1,6 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
-0.05  Sun Mar 20 00:50:21 2005
+0.06  Sun Mar 20 00:50:21 2005
 		- bugfix: $c and $name not being set (Henry Laxen)
 		- bugfix: error in documentation
 		- bugfix: running under mod_perl
