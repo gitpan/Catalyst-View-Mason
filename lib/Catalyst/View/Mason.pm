@@ -5,7 +5,7 @@ use base qw/Catalyst::Base/;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -50,7 +50,8 @@ The default C<data_dir> is C</tmp>.
 =cut
 
 sub new {
-    my ( $self, $c ) = @_;
+    my $self = shift;
+    my $c = shift;
     $self = $self->NEXT::new(@_);
     my $root   = $c->config->{root};
     $self->{output} = '';
