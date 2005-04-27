@@ -5,7 +5,7 @@ use base qw/Catalyst::Base/;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -33,8 +33,8 @@ Catalyst::View::Mason - Mason View Class
 
 =head1 DESCRIPTION
 
-Want to use a Mason component in your views? No problem! Catalyst::View::Mason comes
-to the rescue.
+Want to use a Mason component in your views? No problem!
+Catalyst::View::Mason comes to the rescue.
 
 =head1 CAVEATS
 
@@ -43,28 +43,25 @@ defined within C<config>, the value comes from C<config->{root}>. If you don't
 define it at all, Mason is going to complain :)
 The default C<data_dir> is C</tmp>.
 
-
 =head1 METHODS
-
 
 =cut
 
 sub new {
     my $self = shift;
-    my $c = shift;
+    my $c    = shift;
     $self = $self->NEXT::new(@_);
-    my $root   = $c->config->{root};
+    my $root = $c->config->{root};
     $self->{output} = '';
     my %config = (
-		comp_root => $root,
-		data_dir => '/tmp',
+        comp_root => $root,
+        data_dir  => '/tmp',
         %{ $self->config() },
         out_method => \$self->{output},
     );
     $self->template(
         HTML::Mason::Interp->new(
-            %config,
-			allow_globals => [qw($c $base $name)],
+            %config, allow_globals => [qw($c $base $name)],
         )
     );
     return $self;
@@ -98,13 +95,11 @@ sub process {
 
     # Set the URL base, context and name of the app as global Mason vars
     # $base, $c and $name
-	$self->template->set_global(@$_)
-    foreach (
+    $self->template->set_global(@$_) foreach (
         [ '$base' => $c->req->base ],
         [ '$c'    => $c ],
         [ '$name' => $c->config->{name} ]
     );
-
 
     eval {
         $self->template->exec(
@@ -118,7 +113,7 @@ sub process {
         $error =
           qq/Couldn't render component "$component_path" - error was "$error"/;
         $c->log->error($error);
-        $c->errors($error);
+        $c->error($error);
     }
     $c->res->output( $self->{output} );
     return 1;
@@ -138,10 +133,7 @@ L<Catalyst>, L<HTML::Mason>, "Using Mason from a Standalone Script" in L<HTML::M
 =head1 AUTHOR
 
 Andres Kievsky C<ank@cpan.org>
-
-Based on the original Catalyst::View::TT code by:
-
-Sebastian Riedel, C<sri@cpan.org>
+Sebastian Riedel C<sri@cpan.org>
 Marcus Ramberg
 
 =head1 COPYRIGHT

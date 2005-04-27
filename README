@@ -3,7 +3,7 @@ NAME
 
 SYNOPSIS
         # use the helper
-        create.pl view Mason Mason
+        script/create.pl view Mason Mason
 
         # lib/MyApp/View/Mason.pm
         package MyApp::View::Mason;
@@ -49,11 +49,8 @@ SEE ALSO
     HTML::Mason::Admin
 
 AUTHOR
-    Andres Kievsky "ank@cpan.org"
-
-    Based on the original Catalyst::View::TT code by:
-
-    Sebastian Riedel, "sri@cpan.org" Marcus Ramberg
+    Andres Kievsky "ank@cpan.org" Sebastian Riedel "sri@cpan.org" Marcus
+    Ramberg
 
 COPYRIGHT
     This program is free software, you can redistribute it and/or modify it

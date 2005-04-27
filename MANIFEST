@@ -1,9 +1,11 @@
+Build.PL
 Changes
-lib/Catalyst/Helper/View/Mason.pm
 lib/Catalyst/View/Mason.pm
+lib/Catalyst/Helper/View/Mason.pm
 Makefile.PL
-MANIFEST
-MANIFEST.SKIP
-META.yml			Module meta-data (added by MakeMaker)
+MANIFEST			This list of files
+META.yml
 README
-test.pl
+t/01use.t
+t/02pod.t
+t/03podcoverage.t

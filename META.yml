@@ -1,12 +1,20 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Catalyst-View-Mason
-version:      0.06
-version_from: lib/Catalyst/View/Mason.pm
-installdirs:  site
+---
+name: Catalyst-View-Mason
+version: 0.07
+author:
+  - |-
+    Andres Kievsky C<ank@cpan.org>
+    Sebastian Riedel C<sri@cpan.org>
+    Marcus Ramberg
+abstract: Mason View Class
+license: perl
 requires:
-    Catalyst:                      4.00
-    HTML::Mason:                   1.00
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+  Catalyst: 5
+  HTML::Mason: 0
+provides:
+  Catalyst::Helper::View::Mason:
+    file: lib/Catalyst/Helper/View/Mason.pm
+  Catalyst::View::Mason:
+    file: lib/Catalyst/View/Mason.pm
+    version: 0.07
+generated_by: Module::Build version 0.2609
