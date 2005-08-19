@@ -1,6 +1,6 @@
 ---
 name: Catalyst-View-Mason
-version: 0.07
+version: 0.08
 author:
   - |-
     Andres Kievsky C<ank@cpan.org>
@@ -16,5 +16,5 @@ provides:
     file: lib/Catalyst/Helper/View/Mason.pm
   Catalyst::View::Mason:
     file: lib/Catalyst/View/Mason.pm
-    version: 0.07
-generated_by: Module::Build version 0.2609
+    version: 0.08
+generated_by: Module::Build version 0.25

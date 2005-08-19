@@ -5,7 +5,7 @@ use base qw/Catalyst::Base/;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -28,7 +28,7 @@ Catalyst::View::Mason - Mason View Class
     __PACKAGE__->config->{data_dir} = '/path/to/data_dir';
 
     1;
-    
+
     $c->forward('MyApp::View::Mason');
 
 =head1 DESCRIPTION
@@ -36,12 +36,36 @@ Catalyst::View::Mason - Mason View Class
 Want to use a Mason component in your views? No problem!
 Catalyst::View::Mason comes to the rescue.
 
+=head1 EXAMPLE
+
+From the Catalyst controller:
+
+	$c->stash->{name} = 'Homer'; # Pass a scalar
+	$c->stash->{extra_info} = {
+	           last_name => 'Simpson',
+	           children => [qw(Bart Lisa Maggie)]
+	}; # A ref works too
+
+From the Mason template:
+
+	<%args>
+	$name
+	$extra_info
+	</%args>
+	<p>Your name is <strong><% $name %> <% $extra_info->{last_name} %></strong>
+	<p>Your children are:
+	<ul>
+	% foreach my $child (@{$extra_info->{children}}) {
+	<li>$child
+	% }
+	</ul>
+
 =head1 CAVEATS
 
-You have to define C<comp_root> and C<data_dir>.  If C<comp_root> is not directly
-defined within C<config>, the value comes from C<config->{root}>. If you don't
-define it at all, Mason is going to complain :)
-The default C<data_dir> is C</tmp>.
+You have to define C<comp_root> and C<data_dir>.  If C<comp_root> is not
+directly defined within C<config>, the value comes from
+C<$c-E<gt>config-E<gt>{root}>. If you don't define it at all, Mason is
+going to complain :) The default C<data_dir> is C</tmp>.
 
 =head1 METHODS
 
@@ -50,47 +74,54 @@ The default C<data_dir> is C</tmp>.
 sub new {
     my $self = shift;
     my $c    = shift;
+
     $self = $self->NEXT::new(@_);
-    my $root = $c->config->{root};
     $self->{output} = '';
+
     my %config = (
-        comp_root => $root,
+        comp_root =>  ( $c->config->{root} . '' ),
         data_dir  => '/tmp',
         %{ $self->config() },
         out_method => \$self->{output},
     );
+
     $self->template(
         HTML::Mason::Interp->new(
             %config, allow_globals => [qw($c $base $name)],
         )
     );
+
     return $self;
 }
 
 =head3 process
 
 Renders the component specified in $c->stash->{template} or $c->request->match
-to $c->response->output.
+to $c->response->body.
 
 Note that the component name must be absolute, or is converted to absolute
-(ie, a / is added to the beginning if it doesn't start with one)
+(i.e., a / is added to the beginning if it doesn't start with one).
 
-Mason global variables C<$base>, C<$c> and c<$name> are automatically set to the
-base, context and name of the app, respectively.
+Mason global variables C<$base>, C<$c>, and c<$name> are automatically
+set to the base, context, and name of the app, respectively.
 
 =cut
 
 sub process {
     my ( $self, $c ) = @_;
-    $c->res->headers->content_type('text/html;charset=utf8');
-    $self->{output} = '';
+
     my $component_path = $c->stash->{template} || $c->req->match;
+
     unless ($component_path) {
         $c->log->debug('No Mason component specified for rendering')
           if $c->debug;
         return 0;
     }
-    $component_path = '/' . $component_path if ( $component_path !~ m[^/]o );
+
+    unless ( $component_path =~ m[^/]o ) {
+        $component_path = '/' . $component_path;
+    }
+
     $c->log->debug(qq/Rendering component "$component_path"/) if $c->debug;
 
     # Set the URL base, context and name of the app as global Mason vars
@@ -101,6 +132,8 @@ sub process {
         [ '$name' => $c->config->{name} ]
     );
 
+    $self->{output} = '';
+
     eval {
         $self->template->exec(
             $component_path,
@@ -110,12 +143,18 @@ sub process {
 
     if ( my $error = $@ ) {
         chomp $error;
-        $error =
-          qq/Couldn't render component "$component_path" - error was "$error"/;
+        $error = qq/Couldn't render component "$component_path" - error was "$error"/;
         $c->log->error($error);
         $c->error($error);
+        return 0;
     }
-    $c->res->output( $self->{output} );
+
+    unless ( $c->response->content_type ) {
+        $c->response->content_type('text/html;charset=utf8');
+    }
+
+    $c->response->body( $self->{output} );
+
     return 1;
 }
 
@@ -124,7 +163,7 @@ sub process {
 This allows your view subclass to pass additional settings to the
 Mason HTML::Mason::Interp->new constructor.
 
-=cut 
+=cut
 
 =head1 SEE ALSO
 

@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.08  Xxx Xxx 00 00:00:00 2005
+        - Fixed Content-Type
+	- Stringify root.
+
 0.07  Wed Apr 27 21:00:00 2005
         - updated for Catalyst5
 
