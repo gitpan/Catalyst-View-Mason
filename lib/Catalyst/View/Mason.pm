@@ -1,11 +1,14 @@
 package Catalyst::View::Mason;
 
 use strict;
-use base qw/Catalyst::Base/;
+use warnings;
+use base qw/Catalyst::View/;
+use Scalar::Util qw/blessed/;
+use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09_03';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -23,9 +26,7 @@ Catalyst::View::Mason - Mason View Class
 
     use base 'Catalyst::View::Mason';
 
-    __PACKAGE__->config->{DEBUG} = 'all';
-    __PACKAGE__->config->{comp_root} = '/path/to/comp_root';
-    __PACKAGE__->config->{data_dir} = '/path/to/data_dir';
+    __PACKAGE__->config(use_match => 0);
 
     1;
 
@@ -40,85 +41,120 @@ Catalyst::View::Mason comes to the rescue.
 
 From the Catalyst controller:
 
-	$c->stash->{name} = 'Homer'; # Pass a scalar
-	$c->stash->{extra_info} = {
-	           last_name => 'Simpson',
-	           children => [qw(Bart Lisa Maggie)]
-	}; # A ref works too
+    $c->stash->{name} = 'Homer'; # Pass a scalar
+    $c->stash->{extra_info} = {
+               last_name => 'Simpson',
+               children => [qw(Bart Lisa Maggie)]
+    }; # A ref works too
 
 From the Mason template:
 
-	<%args>
-	$name
-	$extra_info
-	</%args>
-	<p>Your name is <strong><% $name %> <% $extra_info->{last_name} %></strong>
-	<p>Your children are:
-	<ul>
-	% foreach my $child (@{$extra_info->{children}}) {
-	<li>$child
-	% }
-	</ul>
-
-=head1 CAVEATS
-
-You have to define C<comp_root> and C<data_dir>.  If C<comp_root> is not
-directly defined within C<config>, the value comes from
-C<$c-E<gt>config-E<gt>{root}>. If you don't define it at all, Mason is
-going to complain :) The default C<data_dir> is C</tmp>.
+    <%args>
+    $name
+    $extra_info
+    </%args>
+    <p>Your name is <strong><% $name %> <% $extra_info->{last_name} %></strong>
+    <p>Your children are:
+    <ul>
+    % foreach my $child (@{$extra_info->{children}}) {
+    <li>$child
+    % }
+    </ul>
 
 =head1 METHODS
 
 =cut
 
-sub new {
-    my $self = shift;
-    my $c    = shift;
+=head2 new 
 
-    $self = $self->NEXT::new(@_);
-    $self->{output} = '';
+=cut
+
+sub new {
+    my ($self, $c, $arguments) = @_;
 
     my %config = (
-        comp_root =>  ( $c->config->{root} . '' ),
-        data_dir  => '/tmp',
-        %{ $self->config() },
-        out_method => \$self->{output},
+        comp_root     => $c->config->{root}->stringify,
+        data_dir      => File::Spec->tmpdir,
+        use_match     => 1,
+        allow_globals => [],
+        %{ $self->config },
+        %{ $arguments },
     );
+
+    unshift @{ $config{allow_globals} }, qw($c $base $name);
+    $self = $self->NEXT::new($c, { %config });
+    $self->{output} = '';
+
+    $self->config({ %config });
+    delete $config{use_match};
 
     $self->template(
         HTML::Mason::Interp->new(
-            %config, allow_globals => [qw($c $base $name)],
+            %config,
+            out_method    => \$self->{output},
         )
     );
 
     return $self;
 }
 
-=head3 process
+=head2 process
 
 Renders the component specified in $c->stash->{template} or $c->request->match
-to $c->response->body.
+or $c->action (depending on the use_match setting) to $c->response->body.
 
 Note that the component name must be absolute, or is converted to absolute
 (i.e., a / is added to the beginning if it doesn't start with one).
 
-Mason global variables C<$base>, C<$c>, and c<$name> are automatically
+Mason global variables C<$base>, C<$c>, and C<$name> are automatically
 set to the base, context, and name of the app, respectively.
 
 =cut
 
 sub process {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
-    my $component_path = $c->stash->{template} || $c->req->match;
-
+    my $component_path = $c->stash->{template};
+    
     unless ($component_path) {
-        $c->log->debug('No Mason component specified for rendering')
-          if $c->debug;
+        $component_path = $self->config->{use_match}
+            ? $c->request->match
+            : $c->action;
+    }
+
+    my $output = $self->render($c, $component_path);
+
+    if (blessed($output) && $output->isa('HTML::Mason::Exception')) {
+        chomp $output;
+        my $error = qq/Couldn't render component "$component_path" - error was "$output"/;
+        $c->log->error($error);
+        $c->error($error);
         return 0;
     }
 
-    unless ( $component_path =~ m[^/]o ) {
+    unless ($c->response->content_type) {
+        $c->response->content_type('text/html; charset=utf-8');
+    }
+
+    $c->response->body($output);
+
+    return 1;
+}
+
+=head2 render($c, $component_path, \%args)
+
+Renders the given template and returns output, or a HTML::Mason::Exception
+object upon error.
+
+The template variables are set to %$args if $args is a hashref, or
+$c-E<gt>stash otherwise.
+
+=cut
+
+sub render {
+    my ($self, $c, $component_path, $args) = @_;
+
+    unless ($component_path =~ m[^/]o) {
         $component_path = '/' . $component_path;
     }
 
@@ -126,7 +162,7 @@ sub process {
 
     # Set the URL base, context and name of the app as global Mason vars
     # $base, $c and $name
-    $self->template->set_global(@$_) foreach (
+    $self->template->set_global(@$_) for (
         [ '$base' => $c->req->base ],
         [ '$c'    => $c ],
         [ '$name' => $c->config->{name} ]
@@ -137,31 +173,54 @@ sub process {
     eval {
         $self->template->exec(
             $component_path,
-            %{ $c->stash },    # pass the stash
+            ref $args eq 'HASH' ? %{ $args } : %{ $c->stash },
         );
     };
 
-    if ( my $error = $@ ) {
-        chomp $error;
-        $error = qq/Couldn't render component "$component_path" - error was "$error"/;
-        $c->log->error($error);
-        $c->error($error);
-        return 0;
+    if (my $error = $@) {
+        return $error;
     }
 
-    unless ( $c->response->content_type ) {
-        $c->response->content_type('text/html;charset=utf8');
-    }
-
-    $c->response->body( $self->{output} );
-
-    return 1;
+    return $self->{output};
 }
 
 =head3 config
 
-This allows your view subclass to pass additional settings to the
-Mason HTML::Mason::Interp->new constructor.
+This allows you to to pass additional settings to the HTML::Mason::Interp
+constructor or to set the options as below:
+
+=over
+
+=item C<use_match>
+
+Use C<$c-E<gt>request-E<gt>match> instead of C<$c-E<gt>action> to determine
+which template to use if C<$c-E<gt>stash-E<gt>{template}> isn't set. This option
+is deprecated and exists for backward compatibility only.
+
+Currently defaults to 1.
+
+=back
+
+The default HTML::Mason::Interp config options are as follows:
+
+=over
+
+=item C<comp_root>
+
+C<$c-E<gt>config-E<gt>root>
+
+=item C<data_dir>
+
+C<File::Spec-E<gt>tmpdir>
+
+=item C<allow_globals>
+
+C<qw/$c $name $base/>
+
+If you add additional allowed globals those will be appended to the list of
+default globals.
+
+=back
 
 =cut
 
@@ -174,6 +233,7 @@ L<Catalyst>, L<HTML::Mason>, "Using Mason from a Standalone Script" in L<HTML::M
 Andres Kievsky C<ank@cpan.org>
 Sebastian Riedel C<sri@cpan.org>
 Marcus Ramberg
+Florian Ragwitz <rafl@debian.org>
 
 =head1 COPYRIGHT
 

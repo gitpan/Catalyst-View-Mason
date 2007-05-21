@@ -1,0 +1,8 @@
+^\.
+\.bak$
+\.swp$
+^Makefile$
+^Catalyst-View-Mason-
+^cover_db\b
+^blib\b
+^pm_to_blib$

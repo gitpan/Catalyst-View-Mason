@@ -1,6 +1,7 @@
 package Catalyst::Helper::View::Mason;
 
 use strict;
+use warnings;
 
 =head1 NAME
 
@@ -21,9 +22,9 @@ Helper for Mason Views.
 =cut
 
 sub mk_compclass {
-    my ( $self, $helper ) = @_;
+    my ($self, $helper) = @_;
     my $file = $helper->{file};
-    $helper->render_file( 'compclass', $file );
+    $helper->render_file('compclass', $file);
 }
 
 =head1 SEE ALSO
@@ -52,6 +53,8 @@ package [% class %];
 
 use strict;
 use base 'Catalyst::View::Mason';
+
+__PACKAGE__->config(use_match => 0);
 
 =head1 NAME
 

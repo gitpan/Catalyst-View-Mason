@@ -1,20 +1,20 @@
----
-name: Catalyst-View-Mason
-version: 0.08
-author:
-  - |-
-    Andres Kievsky C<ank@cpan.org>
-    Sebastian Riedel C<sri@cpan.org>
-    Marcus Ramberg
+--- 
 abstract: Mason View Class
+author: Andres Kievsky C<ank@cpan.org>
+distribution_type: module
+generated_by: Module::Install version 0.67
 license: perl
-requires:
-  Catalyst: 5
+meta-spec: 
+  url: http://module-build.sourceforge.net/META-spec-v1.3.html
+  version: 1.3
+name: Catalyst-View-Mason
+no_index: 
+  directory: 
+    - inc
+    - t
+requires: 
+  Catalyst: 5.50
+  File::Spec: 0
   HTML::Mason: 0
-provides:
-  Catalyst::Helper::View::Mason:
-    file: lib/Catalyst/Helper/View/Mason.pm
-  Catalyst::View::Mason:
-    file: lib/Catalyst/View/Mason.pm
-    version: 0.08
-generated_by: Module::Build version 0.25
+  Scalar::Util: 0
+version: 0.09_03

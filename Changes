@@ -1,8 +1,26 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.09_03 Mon, 21 May 2007 16:24:10 +0200
+        - Test and implement setting additional mason globals.
+
+0.09_02 Wed, 16 May 2007 17:17:34 +0200
+        - Better test coverage
+        - Some minor cleanups.
+        - use warnings;
+
+0.09_01 Tue, 15 May 2007 23:25:52 +0200
+        - Fixed default content type.
+        - Use the component config.
+        - Add a render method.
+        - Use File::Spec to find the tmpdir.
+        - Use Module::Install instead of Module::Build.
+        - Allow to use $c->action instead of $c->req->match to find the
+          template to use.
+        - Add a test suite.
+
 0.08  Xxx Xxx 00 00:00:00 2005
         - Fixed Content-Type
-	- Stringify root.
+        - Stringify root.
 
 0.07  Wed Apr 27 21:00:00 2005
         - updated for Catalyst5
