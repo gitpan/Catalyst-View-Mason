@@ -16,6 +16,10 @@ __PACKAGE__->config(
         },
 );
 
+if ($::use_root_string) {
+    __PACKAGE__->config(root => __PACKAGE__->config->{root}->stringify);
+}
+
 __PACKAGE__->setup;
 
 sub test : Local {

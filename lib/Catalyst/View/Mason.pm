@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.09_03';
+our $VERSION = '0.09_04';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -73,7 +73,7 @@ sub new {
     my ($self, $c, $arguments) = @_;
 
     my %config = (
-        comp_root     => $c->config->{root}->stringify,
+        comp_root     => $c->config->{root} . '',
         data_dir      => File::Spec->tmpdir,
         use_match     => 1,
         allow_globals => [],

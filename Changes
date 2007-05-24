@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.09_04 Thu, 24 May 2007 19:37:51 +0200
+        - Make comp_root guessing work when $c->config->{root} is not a
+          Path::Class instance.
+
 0.09_03 Mon, 21 May 2007 16:24:10 +0200
         - Test and implement setting additional mason globals.
 
