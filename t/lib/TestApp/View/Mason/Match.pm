@@ -1,4 +1,5 @@
-package TestApp::View::Mason::Match;
+package # hide from PAUSE
+    TestApp::View::Mason::Match;
 
 use strict;
 use warnings;

@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.09_05 Fri, 25 May 2007 16:15:45 +0200
+        - Try to hide the t/lib modules from PAUSE.
+
 0.09_04 Thu, 24 May 2007 19:37:51 +0200
         - Make comp_root guessing work when $c->config->{root} is not a
           Path::Class instance.

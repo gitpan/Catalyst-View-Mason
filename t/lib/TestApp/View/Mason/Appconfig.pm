@@ -1,4 +1,5 @@
-package TestApp::View::Mason::Appconfig;
+package # hide from PAUSE
+    TestApp::View::Mason::Appconfig;
 
 use strict;
 use warnings;

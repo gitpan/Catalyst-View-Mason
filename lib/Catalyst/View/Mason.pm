@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.09_04';
+our $VERSION = '0.09_05';
 
 __PACKAGE__->mk_accessors('template');
 
