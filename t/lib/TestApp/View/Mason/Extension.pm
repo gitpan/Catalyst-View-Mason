@@ -1,11 +1,11 @@
-package TestApp::View::Mason::Match;
+package TestApp::View::Mason::Extension;
 
 use strict;
 use warnings;
 use base qw/Catalyst::View::Mason/;
 
 __PACKAGE__->config(
-        use_match => 0,
+        template_extension => '.mas',
 );
 
 1;

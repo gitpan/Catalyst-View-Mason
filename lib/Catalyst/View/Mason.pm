@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.09_05';
+our $VERSION = '0.09_06';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -65,7 +65,7 @@ From the Mason template:
 
 =cut
 
-=head2 new 
+=head2 new($c, \%config)
 
 =cut
 
@@ -73,25 +73,27 @@ sub new {
     my ($self, $c, $arguments) = @_;
 
     my %config = (
-        comp_root     => $c->config->{root} . '',
-        data_dir      => File::Spec->tmpdir,
-        use_match     => 1,
-        allow_globals => [],
+        comp_root          => $c->config->{root} . q//, # stringify
+        data_dir           => File::Spec->tmpdir,
+        use_match          => 1,
+        allow_globals      => [],
+        template_extension => q//,
         %{ $self->config },
         %{ $arguments },
     );
 
-    unshift @{ $config{allow_globals} }, qw($c $base $name);
-    $self = $self->NEXT::new($c, { %config });
-    $self->{output} = '';
+    unshift @{ $config{allow_globals} }, qw/$c $base $name/;
+    $self = $self->NEXT::new($c, \%config);
+    $self->{output} = q//;
 
     $self->config({ %config });
-    delete $config{use_match};
+
+    delete @config{qw/use_match template_extension/};
 
     $self->template(
         HTML::Mason::Interp->new(
             %config,
-            out_method    => \$self->{output},
+            out_method => \$self->{output},
         )
     );
 
@@ -120,6 +122,8 @@ sub process {
         $component_path = $self->config->{use_match}
             ? $c->request->match
             : $c->action;
+
+        $component_path .= $self->config->{template_extension};
     }
 
     my $output = $self->render($c, $component_path);
@@ -151,10 +155,22 @@ $c-E<gt>stash otherwise.
 
 =cut
 
+sub _default_globals {
+    my ($self, $c) = @_;
+
+    my %default_globals = (
+        '$c'    => $c,
+        '$base' => $c->request->base,
+        '$name' => $c->config->{name},
+    );
+
+    return %default_globals;
+}
+
 sub render {
     my ($self, $c, $component_path, $args) = @_;
 
-    unless ($component_path =~ m[^/]o) {
+    if ($component_path !~ m{^/}) {
         $component_path = '/' . $component_path;
     }
 
@@ -162,13 +178,12 @@ sub render {
 
     # Set the URL base, context and name of the app as global Mason vars
     # $base, $c and $name
-    $self->template->set_global(@$_) for (
-        [ '$base' => $c->req->base ],
-        [ '$c'    => $c ],
-        [ '$name' => $c->config->{name} ]
-    );
+    my %default_globals = $self->_default_globals($c);
+    while (my ($key, $val) = each %default_globals) {
+        $self->template->set_global($key => $val);
+    }
 
-    $self->{output} = '';
+    $self->{output} = q//;
 
     eval {
         $self->template->exec(

@@ -1,5 +1,4 @@
-package # hide from PAUSE
-    TestApp::View::Mason::Pkgconfig;
+package TestApp::View::Mason::Pkgconfig;
 
 use strict;
 use warnings;

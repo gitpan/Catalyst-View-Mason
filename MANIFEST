@@ -26,7 +26,9 @@ t/comp_root.t
 t/content_type.t
 t/debug.t
 t/exception.t
+t/extension.t
 t/globals.t
+t/helper.t
 t/kwalitee.t
 t/lib/TestApp.pm
 t/lib/TestApp/root/action_match
@@ -36,7 +38,9 @@ t/lib/TestApp/root/foo
 t/lib/TestApp/root/globals
 t/lib/TestApp/root/match/foo
 t/lib/TestApp/root/test
+t/lib/TestApp/root/test.mas
 t/lib/TestApp/View/Mason/Appconfig.pm
+t/lib/TestApp/View/Mason/Extension.pm
 t/lib/TestApp/View/Mason/Match.pm
 t/lib/TestApp/View/Mason/Pkgconfig.pm
 t/match.t

@@ -17,4 +17,4 @@ requires:
   File::Spec: 0
   HTML::Mason: 0
   Scalar::Util: 0
-version: 0.09_05
+version: 0.09_06
