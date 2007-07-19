@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use Cwd;
 use File::Path;
-use Catalyst::Helper;
 use File::Spec::Functions qw/catdir catfile/;
 use Test::More;
 
@@ -13,6 +12,9 @@ plan skip_all => 'Test::File required' if $@;
 
 eval 'use Test::Exception';
 plan skip_all => 'Test::Exception required' if $@;
+
+eval 'use Catalyst::Helper';
+plan skip_all => 'Catalyst::Helper required' if $@;
 
 plan tests => 3;
 
@@ -28,7 +30,7 @@ chdir $test_dir;
 my $helper = Catalyst::Helper->new;
 
 $helper->mk_app($app_name);
-$FindBin::Bin = catdir($app_name, 'lib');
+$FindBin::Bin = $FindBin::Bin = catdir($app_name, 'lib');
 
 $helper->mk_component($app_name, 'view', 'Mason', 'Mason');
 

@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.09_07 Thu, 19 Jul 2007 17:58:37 +0200
+        - Skip t/helper.t if Catalyst::Helper isn't around.
+
 0.09_06 Sun, 15 Jul 2007 15:56:34 +0200
         - Minor code cleanups
         - Add a template_extension config var (requested by SCHWIGON).
