@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.10    Sun, 22 Jul 2007 22:40:22 +0200
+        - Upload 0.09_07 as 0.10.
+
 0.09_07 Thu, 19 Jul 2007 17:58:37 +0200
         - Skip t/helper.t if Catalyst::Helper isn't around.
 
