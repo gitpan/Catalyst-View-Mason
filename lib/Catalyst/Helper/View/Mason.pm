@@ -3,6 +3,8 @@ package Catalyst::Helper::View::Mason;
 use strict;
 use warnings;
 
+our $VERSION = '0.11';
+
 =head1 NAME
 
 Catalyst::Helper::View::Mason - Helper for Mason Views
