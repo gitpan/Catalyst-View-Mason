@@ -8,4 +8,11 @@ __PACKAGE__->config(
         allow_globals => [qw/$foo @bar/],
 );
 
+if ($::use_path_class) {
+    __PACKAGE__->config(
+            comp_root => TestApp->path_to('root'),
+            data_dir => TestApp->path_to('root', 'var'),
+    );
+}
+
 1;

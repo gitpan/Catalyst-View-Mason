@@ -16,7 +16,7 @@ plan skip_all => 'Test::Exception required' if $@;
 eval 'use Catalyst::Helper';
 plan skip_all => 'Catalyst::Helper required' if $@;
 
-plan tests => 3;
+plan tests => 4;
 
 my $app_name = 'TestApp';
 my $old_cwd  = cwd;
@@ -42,6 +42,7 @@ lives_ok(sub {
 }, 'module compiles fine');
 
 ok(!TestApp::View::Mason->config->{use_match}, 'module sets use_match to false');
+ok(TestApp::View::Mason->isa('Catalyst::View::Mason'), 'module inherits from C::V::Mason');
 
 END {
     chdir $old_cwd;

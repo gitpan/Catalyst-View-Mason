@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -73,7 +73,7 @@ sub new {
     my ($self, $c, $arguments) = @_;
 
     my %config = (
-        comp_root          => $c->config->{root} . q//, # stringify
+        comp_root          => $c->config->{root},
         data_dir           => File::Spec->tmpdir,
         use_match          => 1,
         allow_globals      => [],
@@ -82,6 +82,10 @@ sub new {
         %{ $arguments },
     );
 
+    # stringify comp_root and data_dir
+    $config{comp_root} .= q//;
+    $config{data_dir}  .= q//;
+
     unshift @{ $config{allow_globals} }, qw/$c $base $name/;
     $self = $self->NEXT::new($c, \%config);
     $self->{output} = q//;
@@ -89,6 +93,14 @@ sub new {
     $self->config({ %config });
 
     delete @config{qw/use_match template_extension/};
+
+    if ($self->config->{use_match}) {
+        $c->log->warn(sprintf(<<'EOW', ref $self));
+DEPRECATION WARNING: %s sets the use_match config variable to a true value.
+This has been deprecated as been deprecated. Please see the
+Catalyst::View::Mason documentation for details on use_match.
+EOW
+    }
 
     $self->template(
         HTML::Mason::Interp->new(
@@ -117,7 +129,7 @@ sub process {
     my ($self, $c) = @_;
 
     my $component_path = $c->stash->{template};
-    
+
     unless ($component_path) {
         $component_path = $self->config->{use_match}
             ? $c->request->match
@@ -206,13 +218,21 @@ constructor or to set the options as below:
 
 =over
 
+=item C<template_extension>
+
+This string is appended (if present) to C<< $c->action >> when generating a
+template path.
+
+Example: C<< template_extension => '.html' >>
+
 =item C<use_match>
 
 Use C<$c-E<gt>request-E<gt>match> instead of C<$c-E<gt>action> to determine
 which template to use if C<$c-E<gt>stash-E<gt>{template}> isn't set. This option
 is deprecated and exists for backward compatibility only.
 
-Currently defaults to 1.
+Currently defaults to 1, to avoid breaking older code, but new code should
+always set this to 0.
 
 =back
 

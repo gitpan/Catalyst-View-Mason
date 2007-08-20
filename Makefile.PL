@@ -12,3 +12,13 @@ requires 'File::Spec' => 0;
 
 auto_install;
 WriteAll;
+
+package MY;
+
+sub postamble {
+    return <<"EOM"
+testcover:
+\tHARNESS_PERL_SWITCHES=-MDevel::Cover PERL_DL_NONLAZY=1 \$(FULLPERLRUN) "-MExtUtils::Command::MM" "-e" "test_harness(\$(TEST_VERBOSE), 'inc', '\$(INST_LIB)', '\$(INST_ARCHLIB)')" \$(TEST_FILES)
+\tcover
+EOM
+}

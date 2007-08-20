@@ -9,7 +9,7 @@ use lib "$FindBin::Bin/lib";
 
 use_ok('Catalyst::Test', 'TestApp');
 
-my $response = request('/test?view=Pkgconfig');
+my $response = request('/test?view=Appconfig');
 
 ok($response->is_success, 'request ok');
 is($response->content, TestApp->config->{default_message}, 'message ok');

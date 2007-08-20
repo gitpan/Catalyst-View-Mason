@@ -25,12 +25,14 @@ t/appconfig.t
 t/comp_root.t
 t/content_type.t
 t/debug.t
+t/deprecation.t
 t/exception.t
 t/extension.t
 t/globals.t
 t/helper.t
 t/kwalitee.t
 t/lib/TestApp.pm
+t/lib/TestApp/FakeLog.pm
 t/lib/TestApp/root/action_match
 t/lib/TestApp/root/additional_globals
 t/lib/TestApp/root/exception
@@ -48,3 +50,4 @@ t/notabs.t
 t/pkgconfig.t
 t/render.t
 t/strict.t
+t/stringify.t

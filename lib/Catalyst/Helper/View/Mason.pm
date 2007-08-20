@@ -3,7 +3,7 @@ package Catalyst::Helper::View::Mason;
 use strict;
 use warnings;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 NAME
 
@@ -54,6 +54,7 @@ __compclass__
 package [% class %];
 
 use strict;
+use warnings;
 use base 'Catalyst::View::Mason';
 
 __PACKAGE__->config(use_match => 0);
