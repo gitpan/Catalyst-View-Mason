@@ -19,7 +19,7 @@ plan skip_all => 'Catalyst::Helper required' if $@;
 plan tests => 4;
 
 my $app_name = 'TestApp';
-my $old_cwd  = cwd;
+my $old_cwd  = cwd();
 my $test_dir = catdir(qw/t var/);
 
 if (!-d $test_dir) {

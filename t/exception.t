@@ -16,7 +16,7 @@ use_ok('Catalyst::Test', 'TestApp');
 
 SKIP: {
     eval 'use Test::MockModule';
-    skip 'Test::MockModule required', 1 if $@;
+    skip 'Test::MockModule required', 2 if $@;
 
     my $mock = Test::MockModule->new('HTML::Mason::Interp');
     $mock->mock(exec => sub { die bless \do { my $o }, 'FakeException' });

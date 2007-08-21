@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.13    Tue, 21 Aug 2007 17:12:11 +0200
+        - Make t/exception.t not fail if Test::MockModule isn't installed by
+          fixing the number of tests to skip.
+
 0.12    Mon, 20 Aug 2007 17:32:39 +0200
         - Clearify documentation on use_match (Hans Dieter Pearcey <hdp@pobox.com>).
         - Deprecate use_match => 1; now raises a warning.
