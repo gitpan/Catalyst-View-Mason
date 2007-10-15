@@ -1,6 +1,6 @@
 --- 
 abstract: Mason View Class
-author: Andres Kievsky C<ank@cpan.org>
+author: =over 4
 distribution_type: module
 generated_by: Module::Install version 0.67
 license: perl
@@ -17,4 +17,4 @@ requires:
   File::Spec: 0
   HTML::Mason: 0
   Scalar::Util: 0
-version: 0.13
+version: 0.14

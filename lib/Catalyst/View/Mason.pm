@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -82,9 +82,12 @@ sub new {
         %{ $arguments },
     );
 
-    # stringify comp_root and data_dir
-    $config{comp_root} .= q//;
+    # stringify data_dir
     $config{data_dir}  .= q//;
+
+    # stringify comp_root if it isn't an unblessed array reference already
+    $config{comp_root} .= q//
+        if blessed($config{comp_root}) || ref $config{comp_root} ne 'ARRAY';
 
     unshift @{ $config{allow_globals} }, qw/$c $base $name/;
     $self = $self->NEXT::new($c, \%config);
@@ -97,8 +100,8 @@ sub new {
     if ($self->config->{use_match}) {
         $c->log->warn(sprintf(<<'EOW', ref $self));
 DEPRECATION WARNING: %s sets the use_match config variable to a true value.
-This has been deprecated as been deprecated. Please see the
-Catalyst::View::Mason documentation for details on use_match.
+This has been deprecated. Please see the Catalyst::View::Mason
+documentation for details on use_match.
 EOW
     }
 
@@ -263,12 +266,19 @@ default globals.
 
 L<Catalyst>, L<HTML::Mason>, "Using Mason from a Standalone Script" in L<HTML::Mason::Admin>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Andres Kievsky C<ank@cpan.org>
-Sebastian Riedel C<sri@cpan.org>
-Marcus Ramberg
-Florian Ragwitz <rafl@debian.org>
+=over 4
+
+=item Andres Kievsky C<ank@cpan.org>
+
+=item Sebastian Riedel C<sri@cpan.org>
+
+=item Marcus Ramberg
+
+=item Florian Ragwitz C<rafl@debian.org>
+
+=back
 
 =head1 COPYRIGHT
 

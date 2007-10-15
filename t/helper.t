@@ -45,6 +45,8 @@ ok(!TestApp::View::Mason->config->{use_match}, 'module sets use_match to false')
 ok(TestApp::View::Mason->isa('Catalyst::View::Mason'), 'module inherits from C::V::Mason');
 
 END {
-    chdir $old_cwd;
-    rmtree($test_dir);
+    if (defined $old_cwd) {
+        chdir $old_cwd;
+        rmtree($test_dir);
+    }
 }

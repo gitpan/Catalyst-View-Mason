@@ -1,5 +1,16 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.14    Mon, 15 Oct 2007 15:14:26 +0200
+        - Test comp_root stringification.
+        - Allow array ref comp_roots.
+        - Improve POD.
+        - Make the testcover target depend on pm_to_blib.
+        - Add a Makefile target for generating README.
+        - Update README.
+        - Silence some warnings in t/helper.t if Test::File isn't present.
+        - Fix a POD typo.
+        - Don't use auto_install in Makefile.PL.
+
 0.13    Tue, 21 Aug 2007 17:12:11 +0200
         - Make t/exception.t not fail if Test::MockModule isn't installed by
           fixing the number of tests to skip.

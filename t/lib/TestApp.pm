@@ -21,6 +21,12 @@ if ($::use_root_string) {
     __PACKAGE__->config(root => __PACKAGE__->config->{root}->stringify);
 }
 
+__PACKAGE__->config(
+        setup_components => {
+            except => qr/^View::Mason::CompRootRef$/,
+        },
+);
+
 __PACKAGE__->log( $::fake_log || Catalyst::Log->new(qw/debug info error fatal/) );
 
 __PACKAGE__->setup;

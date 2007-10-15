@@ -2,6 +2,7 @@
 \.bak$
 \.swp$
 ^Makefile$
+^Makefile.old$
 ^Catalyst-View-Mason-
 ^cover_db\b
 ^blib\b

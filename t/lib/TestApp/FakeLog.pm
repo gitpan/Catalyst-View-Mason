@@ -19,4 +19,6 @@ sub warn {
     push @{ $self->{_warnings_ref} }, $msg;
 }
 
+*debug = *info = *error = *fatal = *is_debug = sub { 1 };
+
 1;

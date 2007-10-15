@@ -36,6 +36,10 @@ L<Catalyst::Response>, L<Catalyst::Helper>
 
 =head1 AUTHOR
 
+Florian Ragwitz <rafl@debian.org>
+
+Originally written by:
+
 Andres Kievsky
 Sebastian Riedel, C<sri@oook.de>
 

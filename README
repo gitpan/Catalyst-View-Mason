@@ -44,7 +44,7 @@ EXAMPLE
         </ul>
 
 METHODS
-  new
+  new($c, \%config)
   process
     Renders the component specified in $c->stash->{template} or
     $c->request->match or $c->action (depending on the use_match setting) to
@@ -54,8 +54,8 @@ METHODS
     absolute (i.e., a / is added to the beginning if it doesn't start with
     one).
 
-    Mason global variables $base, $c, and c<$name> are automatically set to
-    the base, context, and name of the app, respectively.
+    Mason global variables $base, $c, and $name are automatically set to the
+    base, context, and name of the app, respectively.
 
   render($c, $component_path, \%args)
     Renders the given template and returns output, or a
@@ -68,12 +68,19 @@ METHODS
     This allows you to to pass additional settings to the
     HTML::Mason::Interp constructor or to set the options as below:
 
+    "template_extension"
+        This string is appended (if present) to "$c->action" when generating
+        a template path.
+
+        Example: "template_extension => '.html'"
+
     "use_match"
         Use "$c->request->match" instead of "$c->action" to determine which
         template to use if "$c->stash->{template}" isn't set. This option is
         deprecated and exists for backward compatibility only.
 
-        Currently defaults to 1.
+        Currently defaults to 1, to avoid breaking older code, but new code
+        should always set this to 0.
 
     The default HTML::Mason::Interp config options are as follows:
 
@@ -83,13 +90,21 @@ METHODS
     "data_dir"
         "File::Spec->tmpdir"
 
+    "allow_globals"
+        "qw/$c $name $base/"
+
+        If you add additional allowed globals those will be appended to the
+        list of default globals.
+
 SEE ALSO
     Catalyst, HTML::Mason, "Using Mason from a Standalone Script" in
     HTML::Mason::Admin
 
-AUTHOR
-    Andres Kievsky "ank@cpan.org" Sebastian Riedel "sri@cpan.org" Marcus
-    Ramberg Florian Ragwitz <rafl@debian.org>
+AUTHORS
+    Andres Kievsky "ank@cpan.org"
+    Sebastian Riedel "sri@cpan.org"
+    Marcus Ramberg
+    Florian Ragwitz "rafl@debian.org"
 
 COPYRIGHT
     This program is free software, you can redistribute it and/or modify it
