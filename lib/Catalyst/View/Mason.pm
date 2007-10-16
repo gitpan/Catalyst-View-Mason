@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -115,6 +115,29 @@ EOW
     return $self;
 }
 
+=head2 get_component_path
+
+Returns the component path from $c->stash->{template} or
+$c->request->match or $c->action (depending on the use_match setting).
+
+=cut
+
+sub get_component_path {
+    my ($self, $c) = @_;
+
+    my $component_path = $c->stash->{template};
+
+    unless ($component_path) {
+        $component_path = $self->config->{use_match}
+            ? $c->request->match
+            : $c->action;
+
+        $component_path .= $self->config->{template_extension};
+    }
+
+    return $component_path;
+}
+
 =head2 process
 
 Renders the component specified in $c->stash->{template} or $c->request->match
@@ -131,17 +154,8 @@ set to the base, context, and name of the app, respectively.
 sub process {
     my ($self, $c) = @_;
 
-    my $component_path = $c->stash->{template};
-
-    unless ($component_path) {
-        $component_path = $self->config->{use_match}
-            ? $c->request->match
-            : $c->action;
-
-        $component_path .= $self->config->{template_extension};
-    }
-
-    my $output = $self->render($c, $component_path);
+    my $component_path = $self->get_component_path($c);
+    my $output         = $self->render($c, $component_path);
 
     if (blessed($output) && $output->isa('HTML::Mason::Exception')) {
         chomp $output;

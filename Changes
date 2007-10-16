@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.15    Tue, 16 Oct 2007 11:31:30 +0200
+        - Factor out get_component_path to allow better subclassing (SCHWIGON).
+        - Test the above.
+
 0.14    Mon, 15 Oct 2007 15:14:26 +0200
         - Test comp_root stringification.
         - Allow array ref comp_roots.

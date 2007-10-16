@@ -88,6 +88,12 @@ sub globals : Local {
 sub additional_globals : Local {
 }
 
+sub comp_path : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{param} = 'bar';
+}
+
 sub end : Private {
     my ($self, $c) = @_;
 

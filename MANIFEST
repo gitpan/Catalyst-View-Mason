@@ -17,6 +17,7 @@ README
 t/01use.t
 t/action.t
 t/appconfig.t
+t/comp_path.t
 t/comp_root.t
 t/comp_root_ref.t
 t/content_type.t
@@ -39,6 +40,7 @@ t/lib/TestApp/root/match/foo
 t/lib/TestApp/root/test
 t/lib/TestApp/root/test.mas
 t/lib/TestApp/View/Mason/Appconfig.pm
+t/lib/TestApp/View/Mason/Comppath.pm
 t/lib/TestApp/View/Mason/CompRootRef.pm
 t/lib/TestApp/View/Mason/Extension.pm
 t/lib/TestApp/View/Mason/Match.pm
