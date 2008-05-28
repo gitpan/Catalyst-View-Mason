@@ -37,6 +37,13 @@ sub test : Local {
     $c->stash->{message} = ($c->request->param('message') || $c->config->{default_message});
 }
 
+sub test_set_template : Local {
+    my ($self, $c) = @_;
+
+    $c->forward('test');
+    $c->stash->{template} = 'test';
+}
+
 sub test_content_type : Local {
     my ($self, $c) = @_;
 

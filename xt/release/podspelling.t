@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use Test::More;
 
-plan skip_all => 'set $ENV{TEST_AUTHOR} to enable this test' unless $ENV{TEST_AUTHOR};
-
 eval 'use Test::Spelling';
 plan skip_all => 'Test::Spelling required' if $@;
 

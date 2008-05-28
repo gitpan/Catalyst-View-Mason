@@ -39,12 +39,16 @@ EXAMPLE
         <p>Your children are:
         <ul>
         % foreach my $child (@{$extra_info->{children}}) {
-        <li>$child
+        <li><% $child %></li>
         % }
         </ul>
 
 METHODS
-  new($c, \%config)
+  new($app, \%config)
+  get_component_path
+    Returns the component path from $c->stash->{template} or
+    $c->request->match or $c->action (depending on the use_match setting).
+
   process
     Renders the component specified in $c->stash->{template} or
     $c->request->match or $c->action (depending on the use_match setting) to
@@ -72,7 +76,17 @@ METHODS
         This string is appended (if present) to "$c->action" when generating
         a template path.
 
+        Defaults to an empty string.
+
         Example: "template_extension => '.html'"
+
+    "always_append_template_extension"
+        Set this to a true value if you want "template_extension" to be
+        appended to the component path even if it was explicitly set.
+
+        Defaults to 0.
+
+        Example: "always_append_template_extension => 1"
 
     "use_match"
         Use "$c->request->match" instead of "$c->action" to determine which
@@ -82,13 +96,16 @@ METHODS
         Currently defaults to 1, to avoid breaking older code, but new code
         should always set this to 0.
 
+        Example: "use_match => 0"
+
     The default HTML::Mason::Interp config options are as follows:
 
     "comp_root"
-        "$c->config->root"
+        "$app->config->root"
 
     "data_dir"
-        "File::Spec->tmpdir"
+        "File::Spec->catdir( File::Spec->tmpdir,
+        sprintf('%s_%d_mason_data_dir', $app, $<) )"
 
     "allow_globals"
         "qw/$c $name $base/"

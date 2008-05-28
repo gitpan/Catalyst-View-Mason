@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use NEXT;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -57,7 +57,7 @@ From the Mason template:
     <p>Your children are:
     <ul>
     % foreach my $child (@{$extra_info->{children}}) {
-    <li>$child
+    <li><% $child %></li>
     % }
     </ul>
 
@@ -65,19 +65,23 @@ From the Mason template:
 
 =cut
 
-=head2 new($c, \%config)
+=head2 new($app, \%config)
 
 =cut
 
 sub new {
-    my ($self, $c, $arguments) = @_;
+    my ($self, $app, $arguments) = @_;
 
     my %config = (
-        comp_root          => $c->config->{root},
-        data_dir           => File::Spec->tmpdir,
-        use_match          => 1,
-        allow_globals      => [],
-        template_extension => q//,
+        comp_root                        => $app->config->{root},
+        data_dir                         => File::Spec->catdir(
+            File::Spec->tmpdir,
+            sprintf('%s_%d_mason_data_dir', $app, $<),
+        ),
+        use_match                        => 1,
+        allow_globals                    => [],
+        template_extension               => q//,
+        always_append_template_extension => 0,
         %{ $self->config },
         %{ $arguments },
     );
@@ -90,15 +94,20 @@ sub new {
         if blessed($config{comp_root}) || ref $config{comp_root} ne 'ARRAY';
 
     unshift @{ $config{allow_globals} }, qw/$c $base $name/;
-    $self = $self->NEXT::new($c, \%config);
+    $self = $self->NEXT::new($app, \%config);
     $self->{output} = q//;
 
     $self->config({ %config });
 
-    delete @config{qw/use_match template_extension/};
+    # those are config options for the view, not mason itself.
+    delete @config{qw/
+        use_match
+        template_extension
+        always_append_template_extension
+    /};
 
     if ($self->config->{use_match}) {
-        $c->log->warn(sprintf(<<'EOW', ref $self));
+        $app->log->warn(sprintf(<<'EOW', ref $self));
 DEPRECATION WARNING: %s sets the use_match config variable to a true value.
 This has been deprecated. Please see the Catalyst::View::Mason
 documentation for details on use_match.
@@ -126,13 +135,18 @@ sub get_component_path {
     my ($self, $c) = @_;
 
     my $component_path = $c->stash->{template};
+    my $extension      = $self->config->{template_extension};
 
-    unless ($component_path) {
+    if (defined $component_path) {
+        $component_path .= $extension
+            if $self->config->{always_append_template_extension};
+    }
+    else {
         $component_path = $self->config->{use_match}
             ? $c->request->match
             : $c->action;
 
-        $component_path .= $self->config->{template_extension};
+        $component_path .= $extension;
     }
 
     return $component_path;
@@ -240,7 +254,18 @@ constructor or to set the options as below:
 This string is appended (if present) to C<< $c->action >> when generating a
 template path.
 
+Defaults to an empty string.
+
 Example: C<< template_extension => '.html' >>
+
+=item C<always_append_template_extension>
+
+Set this to a true value if you want C<template_extension> to be appended to
+the component path even if it was explicitly set.
+
+Defaults to 0.
+
+Example: C<< always_append_template_extension => 1 >>
 
 =item C<use_match>
 
@@ -251,6 +276,8 @@ is deprecated and exists for backward compatibility only.
 Currently defaults to 1, to avoid breaking older code, but new code should
 always set this to 0.
 
+Example: C<< use_match => 0 >>
+
 =back
 
 The default HTML::Mason::Interp config options are as follows:
@@ -259,11 +286,11 @@ The default HTML::Mason::Interp config options are as follows:
 
 =item C<comp_root>
 
-C<$c-E<gt>config-E<gt>root>
+C<$app-E<gt>config-E<gt>root>
 
 =item C<data_dir>
 
-C<File::Spec-E<gt>tmpdir>
+C<File::Spec-E<gt>catdir( File::Spec-E<gt>tmpdir, sprintf('%s_%d_mason_data_dir', $app, $E<lt>) )>
 
 =item C<allow_globals>
 
