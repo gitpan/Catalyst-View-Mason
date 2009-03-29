@@ -6,9 +6,9 @@ use base qw/Catalyst::View/;
 use Scalar::Util qw/blessed/;
 use File::Spec;
 use HTML::Mason;
-use NEXT;
+use MRO::Compat;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -78,7 +78,7 @@ sub new {
             File::Spec->tmpdir,
             sprintf('%s_%d_mason_data_dir', $app, $<),
         ),
-        use_match                        => 1,
+        use_match                        => 0,
         allow_globals                    => [],
         template_extension               => q//,
         always_append_template_extension => 0,
@@ -94,7 +94,7 @@ sub new {
         if blessed($config{comp_root}) || ref $config{comp_root} ne 'ARRAY';
 
     unshift @{ $config{allow_globals} }, qw/$c $base $name/;
-    $self = $self->NEXT::new($app, \%config);
+    $self = $self->next::method($app, \%config);
     $self->{output} = q//;
 
     $self->config({ %config });
@@ -273,8 +273,7 @@ Use C<$c-E<gt>request-E<gt>match> instead of C<$c-E<gt>action> to determine
 which template to use if C<$c-E<gt>stash-E<gt>{template}> isn't set. This option
 is deprecated and exists for backward compatibility only.
 
-Currently defaults to 1, to avoid breaking older code, but new code should
-always set this to 0.
+Currently defaults to 0. Old code should set this to 1 to avoid breakage.
 
 Example: C<< use_match => 0 >>
 
@@ -318,6 +317,8 @@ L<Catalyst>, L<HTML::Mason>, "Using Mason from a Standalone Script" in L<HTML::M
 =item Marcus Ramberg
 
 =item Florian Ragwitz C<rafl@debian.org>
+
+=item Justin Hunter C<justin.d.hunter@gmail.com>
 
 =back
 

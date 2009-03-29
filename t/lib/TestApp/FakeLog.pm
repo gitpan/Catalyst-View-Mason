@@ -2,13 +2,13 @@ package TestApp::FakeLog;
 
 use strict;
 use warnings;
-use NEXT;
+use MRO::Compat;
 use base qw/Catalyst::Log/;
 
 sub new {
     my ($self, $warnings_ref, @args) = @_;
 
-    $self = $self->NEXT::new(@args);
+    $self = $self->next::method(@args);
     $self->{_warnings_ref} = $warnings_ref;
 
     return $self;

@@ -3,7 +3,7 @@ package Catalyst::Helper::View::Mason;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 =head1 NAME
 
@@ -59,25 +59,26 @@ package [% class %];
 
 use strict;
 use warnings;
-use base 'Catalyst::View::Mason';
+
+use parent 'Catalyst::View::Mason';
 
 __PACKAGE__->config(use_match => 0);
 
 =head1 NAME
 
-[% class %] - Mason View Component
-
-=head1 SYNOPSIS
-
-    Very simple to use
+[% class %] - Mason View Component for [% app %]
 
 =head1 DESCRIPTION
 
-Very nice component.
+Mason View Component for [% app %]
+
+=head1 SEE ALSO
+
+L<[% app %]>, L<HTML::Mason>
 
 =head1 AUTHOR
 
-Clever guy
+[% author %]
 
 =head1 LICENSE
 

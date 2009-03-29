@@ -9,7 +9,7 @@ our $VERSION = '0.01';
 
 __PACKAGE__->config(
         name                     => 'TestApp',
-        default_view             => 'Appconfig',
+        default_view             => 'Mason::Appconfig',
         default_message          => 'hi',
         'View::Mason::Appconfig' => {
             default_escape_flags => ['h'],
@@ -63,17 +63,15 @@ sub exception : Local {
 sub render : Local {
     my ($self, $c) = @_;
 
-    my $out = $c->stash->{message} = $self->view->render(
+    my $out = $self->view->render(
             $c, $c->request->param('template'),
             { param => $c->req->param('param') || '' },
     );
 
+    $c->response->body($out);
+
     if (blessed($out) && $out->isa('HTML::Mason::Exception')) {
-        $c->response->body($out);
         $c->response->status(403);
-    }
-    else {
-        $c->stash->{template} = 'test';
     }
 }
 
@@ -107,8 +105,8 @@ sub end : Private {
     return 1 if $c->response->status =~ /^3\d\d$/;
     return 1 if $c->response->body;
 
-    my $view = 'Mason::' . ($c->request->param('view') || $c->config->{default_view});
-    $c->forward( $c->view($view) );
+    my ($requested_view) = $c->request->param('view');
+    $c->forward($c->view( $requested_view ? $requested_view : () ));
 }
 
 1;
