@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use inc::Module::Install;
+use inc::Module::Install 0.87;
 
 name 'Catalyst-View-Mason';
 all_from 'lib/Catalyst/View/Mason.pm';
@@ -16,6 +16,8 @@ requires 'MRO::Compat'  => 0;
 
 auto_provides;
 extra_tests;
+
+resources repository => 'http://dev.catalyst.perl.org/repos/Catalyst/Catalyst-View-Mason/trunk/';
 
 WriteAll;
 

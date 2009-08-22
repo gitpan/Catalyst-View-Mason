@@ -48,6 +48,7 @@ t/lib/TestApp/View/Mason/CompRootRef.pm
 t/lib/TestApp/View/Mason/Extension.pm
 t/lib/TestApp/View/Mason/ExtensionAlways.pm
 t/lib/TestApp/View/Mason/Match.pm
+t/lib/TestApp/View/Mason/NoMatch.pm
 t/lib/TestApp/View/Mason/Pkgconfig.pm
 t/lib/TestApp2.pm
 t/lib/TestApp2/View/Mason.pm

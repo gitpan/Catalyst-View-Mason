@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use MRO::Compat;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -104,6 +104,7 @@ sub new {
         use_match
         template_extension
         always_append_template_extension
+        catalyst_component_name
     /};
 
     if ($self->config->{use_match}) {

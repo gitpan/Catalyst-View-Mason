@@ -23,7 +23,10 @@ if ($::use_root_string) {
 
 __PACKAGE__->config(
         setup_components => {
-            except => qr/^View::Mason::CompRootRef$/,
+            except => [
+                'TestApp::View::Mason::CompRootRef',
+                ($::setup_match ? () : 'TestApp::View::Mason::Match'),
+            ],
         },
 );
 
@@ -106,7 +109,7 @@ sub end : Private {
     return 1 if $c->response->body;
 
     my ($requested_view) = $c->request->param('view');
-    $c->forward($c->view( $requested_view ? $requested_view : () ));
+    $c->forward($c->view( $requested_view ? "Mason::$requested_view" : () ));
 }
 
 1;

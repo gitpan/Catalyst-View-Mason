@@ -6,7 +6,7 @@ use base 'Catalyst::View::Mason';
 
 __PACKAGE__->config(
         allow_globals => [qw/$foo @bar/],
-        use_match     => 1,
+        use_match     => 0,
 );
 
 if ($::use_path_class) {

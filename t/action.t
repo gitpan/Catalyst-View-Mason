@@ -9,5 +9,5 @@ use lib "$FindBin::Bin/lib";
 
 use_ok('Catalyst::Test', 'TestApp');
 
-my $request = request('/action_match/foo?view=Match');
+my $request = request('/action_match/foo?view=NoMatch');
 ok($request->is_success, 'request ok');
