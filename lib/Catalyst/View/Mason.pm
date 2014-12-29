@@ -8,7 +8,7 @@ use File::Spec;
 use HTML::Mason;
 use MRO::Compat;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 __PACKAGE__->mk_accessors('template');
 
@@ -324,6 +324,10 @@ L<Catalyst>, L<HTML::Mason>, "Using Mason from a Standalone Script" in L<HTML::M
 =back
 
 =head1 COPYRIGHT
+
+Copyright (c) 2005 - 2009
+the Catalyst::View::Mason L</AUTHORS>
+as listed above.
 
 This program is free software, you can redistribute it and/or modify it under
 the same terms as Perl itself.

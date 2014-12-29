@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::View::Mason.
 
+0.19    Mon, 29 Dec 2014 16:00 Central Time (USA)
+        - Minor changes to the test suite so that code compiles and runs
+          on modern Catalyst.  No other guarantees.
+
 0.18    Sat, 22 Aug 2009 21:17:52 +0200
          - Make it work with Catalyst::Runtime 5.80010.
          - Fix warnings in the test suite.
